@@ -1,0 +1,37 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_WEEK1_HW
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARU_WEEK1_HW.
+
+PARAMETERS : p_amount TYPE p DECIMALS 2,
+             p_prof TYPE p DECIMALS 2,
+             p_days TYPE i,
+             p_check as CHECKBOX.
+
+DATA : final_amount TYPE p DECIMALS 2,
+       profit TYPE p DECIMALS 2.
+
+
+
+IF p_check EQ 'X'.
+
+profit = p_amount * ( p_prof / 100 ) * ( p_days ).
+  final_amount = p_amount + profit.
+
+
+
+ELSE.
+ final_amount = p_amount.
+ DO p_days TIMES.
+
+  profit = final_amount * p_prof / 100.
+  final_amount = final_amount + profit.
+
+ENDDO.
+ENDIF.
+
+WRITE : 'Input Amount:' ,p_amount,/
+        'Total Days:' ,p_days,/
+        'Total Amount:' , final_amount.
