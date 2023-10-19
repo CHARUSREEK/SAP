@@ -1,0 +1,67 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_SALES_ORDER
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARU_SALES_ORDER.
+
+TYPES : BEGIN OF ty_vbap,
+  posnr TYPE vbap-posnr,
+  pstyv TYPE vbap-pstyv,
+  arktx TYPE vbap-arktx,
+  kwmeng TYPE vbap-kwmeng,
+  zieme TYPE vbap-zieme,
+  netwr TYPE vbap-netwr,
+END OF ty_vbap.
+
+TYPES : BEGIN OF ty_vbak,
+  vbeln TYPE vbak-vbeln,
+  audat TYPE vbak-audat,
+  netwr TYPE vbak-netwr,
+  kunnr TYPE vbak-kunnr,
+END OF ty_vbak.
+
+*TYPES : BEGIN OF ty_kna1,
+*  kunnr TYPE kna1-kunnr,
+*  name1 TYPE kna1-name1,
+*END OF ty_kna1.
+*
+*TYPES : BEGIN OF ty_t006a,
+*  msehi TYPE t006a-msehi,
+*  msehl TYPE t006a-msehl,
+*  mseht TYPE t006a-mseht,
+* END OF ty_t006a.
+
+ DATA : st_vbap TYPE ty_vbap,
+      st_vbak TYPE ty_vbak,
+       v_name1 TYPE kna1-name1,
+       v_mseht TYPE t006a-mseht.
+
+
+  PARAMETERS : p_docnum TYPE vbak-vbeln.
+*  p_ddate TYPE vbak-audat,
+*  p_netval TYPE vbak-netwr,
+*  p_sparty TYPE vbak-kunnr.
+
+  SELECT SINGLE vbeln audat netwr kunnr from vbak INTO st_vbak where vbeln eq p_docnum.
+  SELECT SINGLE name1 FROM kna1 INTO v_name1 where kunnr EQ st_vbak-kunnr.
+
+  WRITE : / 'Document Number:' , st_vbak-vbeln, : /
+            'Document Date:' , st_vbak-audat, : /
+            'Net Value:' , st_vbak-netwr, : /
+            'Sold To Party:' , v_name1.
+
+   WRITE : / 'Item No.',20 'Material', 35 'Item Description',60 'Order Qty',80 'UoM',100 'NetVal'.
+
+
+  SELECT posnr pstyv arktx kwmeng zieme netwr  from vbap into st_vbap where vbeln eq p_docnum.
+*    SELECT SINGLE mseht FROM t006a INTO v_mseht where msehi EQ st_vbap-zieme.
+      SELECT SINGLE mseht from t006a into v_mseht where spras eq sy-langu and msehi eq st_vbap-zieme.
+  WRITE : / st_vbap-posnr,
+   20 st_vbap-pstyv,
+   35 st_vbap-arktx,
+   48 st_vbap-kwmeng,
+   80 v_mseht,
+   88 st_vbap-netwr.
+
+  ENDSELECT .

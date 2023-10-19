@@ -1,0 +1,29 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARUSREE_STRUCTURE1
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARUSREE_STRUCTURE1.
+
+TYPES: BEGIN OF ty_makt,
+  emp_id type ZCHARUSREE_MAKT-emp_id,
+  name type zcharusree_makt-name,
+  salary type zcharusree_makt-salary,
+  dept_id TYPE zcharusree_makt-dept_id,
+  END OF ty_makt.
+
+  DATA : st_makt TYPE ty_makt.
+
+  PARAMETERS p_id type zcharusree_makt-emp_id.
+  SELECT  emp_id name salary dept_id FROM zcharusree_makt INTO st_makt where emp_id EQ p_id.
+
+    DATA v_desc TYPE zcharusree_dept-dept_desc.
+    SELECT SINGLE dept_desc from zcharusree_dept into v_desc where dept_id EQ st_makt-dept_id.
+
+    write : st_makt-emp_id,
+    st_makt-name,
+    st_makt-salary,
+    st_makt-dept_id,
+    v_desc.
+
+    ENDSELECT .

@@ -1,0 +1,57 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARUSREE_FIRSTPROGRAM
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARUSREE_FIRSTPROGRAM.
+
+DATA qty TYPE i.
+qty = '10.35'.
+WRITE qty.
+qty = '20.35'.
+WRITE : / qty.
+
+Data name TYPE c LENGTH 10.
+name = 'Charusree'.
+WRITE : / : 'Name:',name.
+
+Data decimal TYPE p decimals 3.
+decimal = '100.2345'.
+write : / decimal.
+
+Data float TYPE f.
+float = '10.2'.
+WRITE : / float.
+
+Data date TYPE d.
+date = '20231010'.
+write : / date.
+
+DATA time TYPE t.
+time = '06:12'.
+write : / time.
+
+Data Location TYPE string.
+Location = 'Trivandrum'.
+write : / Location.
+
+*Data dates TYPE dats.
+*dates = '20231010'.
+*write : / dates.
+
+DATA : v_date TYPE d,
+      v_out TYPE c LENGTH 10.
+
+v_date = '20231010'.
+WRITE v_date TO v_out.
+WRITE v_out.
+
+*types zty_namec type c length 10.
+
+DATA v1 type zty_namec.
+v1 = 'jskwjdkefjejf'.
+write / v1.
+
+DATA v2 type zty_test.
+v2 = 'Charusree'.
+write / v2.

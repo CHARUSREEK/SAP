@@ -1,0 +1,37 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARUSREE_STRUCTURE3
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARUSREE_STRUCTURE3.
+
+
+*Types: BEGIN OF ty_marc,
+*  matnr type marc-matnr,
+*  werks type marc-werks,
+*  END OF ty_marc.
+*
+*  data: st_marc type ty_marc.
+*  PARAMETERS p_matnr type marc-matnr.
+*  select matnr werks FROM marc into st_marc where matnr EQ p_matnr.
+*
+*    write: : / st_marc-matnr,
+*    st_marc-werks.
+*    ENDSELECT .
+
+
+
+Types: BEGIN OF ty_marc,
+  matnr type marc-matnr,
+  werks type marc-werks,
+  END OF ty_marc.
+
+  data: st_marc type ty_marc.
+  data : v_name type t001w-name1.
+  PARAMETERS p_matnr type marc-matnr.
+  select matnr werks FROM marc into st_marc where matnr EQ p_matnr.
+select  single name1 from t001w into v_name where werks eq st_marc-werks.
+    write: : / st_marc-matnr,
+    st_marc-werks,
+    v_name.
+    ENDSELECT .

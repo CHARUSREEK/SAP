@@ -1,0 +1,32 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_STRUCT3_IT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARU_STRUCT3_IT.
+
+
+Types: BEGIN OF ty_marc,
+  matnr type marc-matnr,
+  werks type marc-werks,
+  END OF ty_marc.
+
+
+  data: it_marc type table of ty_marc,
+        wa_marc like line of it_marc,
+
+        it_t001w TYPE TABLE OF t001w-name1,
+        wa_t001w LIKE LINE OF it_t001w.
+
+
+  PARAMETERS p_matnr type marc-matnr.
+
+  select matnr werks FROM marc into table it_marc where matnr EQ p_matnr.
+
+    LOOP AT it_marc INTO wa_marc.
+    select  single name1 from t001w into wa_t001w where werks eq wa_marc-werks.
+    write: : / wa_marc-matnr,
+    wa_marc-werks,
+    wa_t001w.
+
+    ENDLOOP .
