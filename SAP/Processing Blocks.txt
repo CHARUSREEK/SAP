@@ -1,0 +1,37 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_PROCESSING_BLOCKS
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARU_PROCESSING_BLOCKS.
+
+DATA v_maktx TYPE maktx.
+PARAMETERS p_matnr TYPE matnr DEFAULT  'MN100'.
+PARAMETERS p_date TYPE sy-datum.
+PARAMETERS p_set1 AS CHECKBOX.
+
+START-OF-SELECTION.
+DATA v_name TYPE c LENGTH 10.
+SELECT single maktx from makt INTO v_maktx WHERE matnr EQ p_matnr.
+  PERFORM show_output.
+  AT LINE-SELECTION.
+    WRITE 'Secondary List'.
+    CALL SELECTION-SCREEN 1000.
+    FORM show_output.
+
+    v_name = 'Charu'.
+*    WRITE v_maktx.
+    WRITE v_name.
+    ENDFORM.
+
+    FORM display.
+      v_name = 'Charu'.
+      ENDFORM.
+      AT SELECTION-SCREEN OUTPUT.
+        p_date = sy-datum.
+        LOOP AT SCREEN.
+          IF screen-name = 'P_SETL'.
+            screen-input = 0.
+            MODIFY SCREEN.
+          ENDIF.
+    ENDLOOP.

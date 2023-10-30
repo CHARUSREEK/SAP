@@ -1,0 +1,35 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_PROCESSBLOCKS_INTRO
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARU_PROCESSBLOCKS_INTRO.
+
+PARAMETERS p_matnr TYPE matnr.
+LOAD-OF-PROGRAM.
+WRITE : / 'load of program triggered'.
+
+INITIALIZATION.
+WRITE : / 'Initialization'.
+
+START-OF-SELECTION.
+WRITE : / 'Start of selection'.
+
+END-OF-SELECTION.
+WRITE : / 'End of selection'.
+
+
+AT SELECTION-SCREEN.
+  WRITE : / 'At selection screen'.
+
+AT SELECTION-SCREEN OUTPUT.
+  WRITE : / 'At Selection screen output'.
+
+ TOP-OF-PAGE.
+ WRITE : / 'Top of page'.
+
+ END-OF-PAGE.
+ WRITE : / 'End of Page'.
+
+ AT LINE-SELECTION.
+   write : / 'At line selection'.
