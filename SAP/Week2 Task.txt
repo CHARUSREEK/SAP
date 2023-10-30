@@ -1,0 +1,40 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_WEEK2_TASK
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARU_WEEK2_TASK.
+
+TYPES : BEGIN OF ty_range,
+       sign TYPE  c length 1,
+       opti type c length 2,
+  low1 type werks_d,
+  high1 type werks_d,
+  END OF ty_range.
+DATA : it_marc TYPE STANDARD TABLE OF  zcharu_view ,
+       wa_marc LIKE LINE OF it_marc.
+
+DATA : it_plant type STANDARD TABLE OF zcharu_task2,
+      wa_plant LIKE LINE OF it_plant.
+
+*DATA:
+*      prev_low TYPE zcharu_task2-low1,
+*      prev_high TYPE zcharu_task2-high1.
+DATA: it_range type table of ty_range.
+
+SELECT-OPTIONS S_NUM FOR wa_marc-matnr.
+SELECT * FROM zcharu_view INTO TABLE  it_marc WHERE matnr IN s_num.
+SELECT sign opt low1 high1 from zcharu_task2 into table it_range where name eq 'CHECK_PLAN'.
+
+  LOOP AT it_marc INTO wa_marc.
+
+IF wa_marc-werks IN it_range.
+  FORMAT COLOR COL_POSITIVE.
+  ENDIF.
+
+WRITE : / wa_marc-matnr,
+              wa_marc-werks,
+              wa_marc-name1.
+
+    FORMAT COLOR OFF.
+ENDLOOP.
