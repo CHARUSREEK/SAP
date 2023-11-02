@@ -1,0 +1,28 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_PROCEDURE
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARU_PROCEDURE.
+*DATA v_date TYPE sy-datum.
+**INITIALIZATION.
+*LOAD-OF-PROGRAM.
+*v_date = sy-datum.
+*START-OF-SELECTION.
+*PERFORM display.
+**&---------------------------------------------------------------------*
+**& Form display
+**&---------------------------------------------------------------------*
+**& text
+**&---------------------------------------------------------------------*
+**& -->  p1        text
+**& <--  p2        text
+**&---------------------------------------------------------------------*
+*FORM display .
+*WRITE v_date.
+*ENDFORM.
+
+DATA v_date TYPE sy-datum.
+IMPORT v_date FROM MEMORY ID 'charu'.
+GET PARAMETER ID 'charu' FIELD v_date.
+write v_date.

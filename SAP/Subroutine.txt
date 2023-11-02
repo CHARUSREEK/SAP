@@ -1,0 +1,177 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_SR_DEMO1
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zcharu_sr_demo1.
+
+
+
+ DATA :it_header TYPE  ZCHARU_T_HEADER,
+       wa_header LIKE LINE OF it_header,
+       it_item   TYPE  ZCHARU_T_ITEM,
+       wa_item   LIKE LINE OF it_item.
+
+
+
+SELECT-OPTIONS s_num FOR wa_header-vbeln.
+
+START-OF-SELECTION.
+
+
+  PERFORM header IN PROGRAM zcharu_sr_demo2 USING s_num[] CHANGING it_header.
+ END-OF-SELECTION.
+
+ LOOP AT it_header INTO wa_header.
+
+  AT FIRST.
+      WRITE :/20 'Document Number',
+       40 'Doc Date',
+       70 'Net Val',
+       90 'Sold To Party'.
+    ENDAT.
+
+    WRITE : /20 wa_header-vbeln,
+            40 wa_header-audat,
+            60 wa_header-netwr,
+           90  wa_header-name1.
+  ENDLOOP.
+
+
+
+
+AT LINE-SELECTION.
+  DATA : fnam(20),fval(50).
+  DATA v_vbeln TYPE vbap-vbeln.
+  GET CURSOR FIELD fnam VALUE fval.
+  fnam = wa_header-vbeln.
+  CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+    EXPORTING
+      input  = fval
+    IMPORTING
+      output = v_vbeln.
+
+  CLEAR it_item.
+
+  PERFORM items IN PROGRAM zcharu_sr_demo2 USING v_vbeln CHANGING it_item.
+
+  LOOP AT it_item INTO wa_item.
+
+
+
+    AT FIRST.
+      WRITE :/ 'Item',
+           20 'Material',
+           35 'ItemDesc',
+    60 'Order Qty' ,
+    80 'UoM',
+    100'NetVal'.
+   ENDAT.
+
+    WRITE : / wa_item-posnr,
+             20 wa_item-pstyv,
+             35  wa_item-arktx,
+             50 wa_item-kwmeng,
+             80 wa_item-msehl,
+             90 wa_item-netwr.
+
+  ENDLOOP.
+
+
+
+
+
+=========================================================================
+
+
+
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_SR_DEMO2
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zcharu_sr_demo2.
+
+TYPES : BEGIN OF ty_range,
+          sign TYPE c LENGTH 1,
+          opti TYPE c LENGTH 2,
+          low  TYPE vbeln,
+          high TYPE vbeln,
+        END OF ty_range.
+
+
+
+
+TYPES :ty_it_range  TYPE STANDARD TABLE OF ty_range.
+
+
+*SELECT-OPTIONS s_num FOR wa_vbak-vbeln.
+*&---------------------------------------------------------------------*
+*& Form header
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*&      --> S_NUM
+*&      <-- IT_VBAK
+*&      <-- IT_KNA1
+*&---------------------------------------------------------------------*
+FORM header  USING    p_s_num TYPE ty_it_range
+*             CHANGING p_it_vbak TYPE ty_it_vbak
+*                      p_it_kna1 TYPE ty_it_kna1.
+              CHANGING p_it_header TYPE zcharu_t_header.
+
+
+  DATA :
+    it_vbak TYPE TABLE OF zcharu_s_vbak,
+    wa_vbak LIKE LINE OF it_vbak,
+    it_kna1 TYPE TABLE OF zcharu_s_kna1,
+    wa_kna1 LIKE LINE OF it_kna1.
+  DATA : wa_header LIKE LINE OF p_it_header.
+
+
+  SELECT  vbeln audat netwr kunnr FROM vbak INTO TABLE it_vbak WHERE vbeln IN p_s_num.
+  SELECT  kunnr name1 FROM kna1 INTO TABLE it_kna1 FOR ALL ENTRIES IN it_vbak WHERE kunnr EQ it_vbak-kunnr.
+
+  LOOP AT it_vbak INTO wa_vbak.
+    READ TABLE it_kna1 INTO wa_kna1 WITH KEY kunnr = wa_vbak-kunnr.
+ MOVE-CORRESPONDING wa_vbak TO wa_header.
+    MOVE-CORRESPONDING wa_kna1 TO wa_header.
+    APPEND wa_header TO p_it_header.
+
+
+  ENDLOOP.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form items
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*&      --> V_VBELN
+*&      <-- IT_VBAP
+*&      <-- IT_T006A
+*&---------------------------------------------------------------------*
+FORM items  USING    p_v_vbeln TYPE vbap-vbeln
+*
+  CHANGING p_it_item TYPE zcharu_t_item.
+
+  DATA : it_vbap  TYPE TABLE OF zcharu_s_vbap,
+         wa_vbap  LIKE LINE OF it_vbap,
+         it_t006a TYPE TABLE OF zcharu_s_t006a,
+         wa_t006a LIKE LINE OF it_t006a.
+
+  DATA : wa_item LIKE LINE OF p_it_item.
+
+  SELECT  vbeln posnr pstyv arktx kwmeng zieme netwr FROM vbap INTO TABLE it_vbap WHERE vbeln EQ p_v_vbeln.
+  SELECT msehi msehl FROM t006a INTO TABLE it_t006a FOR ALL ENTRIES IN it_vbap WHERE spras EQ sy-langu AND msehi EQ it_vbap-zieme.
+
+  LOOP AT it_vbap INTO wa_vbap.
+    READ TABLE it_t006a INTO wa_t006a WITH KEY msehi = wa_vbap-zieme.
+
+    MOVE-CORRESPONDING wa_vbap TO wa_item.
+    MOVE-CORRESPONDING wa_t006a TO wa_item.
+    APPEND wa_item TO p_it_item.
+
+  ENDLOOP.
+
+ENDFORM.

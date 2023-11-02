@@ -1,0 +1,18 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_PROCEDURE_CALL
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARU_PROCEDURE_CALL.
+*PERFORM display IN PROGRAM zcharu_procedure.
+*SUBMIT zcharu_procedure.
+
+
+Data v_date TYPE sy-datum.
+v_date = sy-datum.
+write v_date.
+AT LINE-SELECTION.
+  export v_date to MEMORY id 'charu'.
+set PARAMETER ID 'charu' FIELD v_date.
+SUBMIT zcharu_procedure AND RETURN.
+WRITE 'Hello ABAP'.

@@ -1,0 +1,53 @@
+
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_FM_SALES
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zcharu_fm_sales.
+
+DATA :it_header TYPE  zcharu_t_header,
+      wa_header LIKE LINE OF it_header,
+      it_item   TYPE  zcharu_t_items,
+      wa_item   LIKE LINE OF it_item.
+
+SELECT-OPTIONS s_num FOR wa_header-vbeln.
+
+START-OF-SELECTION.
+
+  CALL FUNCTION 'ZCHARU_HDETAILS'
+    EXPORTING
+      im_vbeln  = s_num[]
+    IMPORTING
+      ex_header = it_header.
+
+END-OF-SELECTION.
+
+  CALL FUNCTION 'ZCHARU_WRITEHEADER'
+    EXPORTING
+      im_header = it_header.
+
+AT LINE-SELECTION.
+
+  DATA : fnam(20),fval(50).
+  DATA v_vbeln TYPE vbap-vbeln.
+  GET CURSOR FIELD fnam VALUE fval.
+  fnam = wa_header-vbeln.
+  CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+    EXPORTING
+      input  = fval
+    IMPORTING
+      output = v_vbeln.
+
+  CLEAR it_item.
+
+  CALL FUNCTION 'ZCHARU_IDETAILS'
+    EXPORTING
+      im_v_vbeln = v_vbeln
+    IMPORTING
+      ex_item    = it_item.
+
+
+  CALL FUNCTION 'ZCHARU_WRITEITEM'
+    EXPORTING
+      im_item = it_item.
