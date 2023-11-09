@@ -1,0 +1,18 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_OO_INHERITANCE2
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zcharu_oo_inheritance2.
+
+
+DATA : o_bus     TYPE REF TO zcl_charu_bus,
+       o_truck   TYPE REF TO zcl_charu_truck,
+       o_account TYPE REF TO zcl_charu_account.
+
+CREATE OBJECT : o_account, o_bus, o_truck.
+
+o_account->calculate_fuel_cost( ovehicle = o_bus ).
+o_account->calculate_fuel_cost( ovehicle = o_truck ).
+
+WRITE 'End'.

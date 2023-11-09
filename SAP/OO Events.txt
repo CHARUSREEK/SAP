@@ -1,0 +1,27 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_OO_EVENTS
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARU_OO_EVENTS.
+
+CLASS lcl_event_handler DEFINITION.
+  PUBLIC SECTION.
+  METHODS catch_double_click FOR EVENT raise_double_click of zcl_charu_events.
+  ENDCLASS.
+  CLASS lcl_event_handler IMPLEMENTATION.
+    METHOD catch_double_click.
+      CALL TRANSACTION 'MM03'.
+      ENDMETHOD.
+      ENDCLASS.
+
+      DATA o_emp TYPE REF TO  zcl_charu_events.
+      DATA o_events TYPE REF TO lcl_event_handler.
+      START-OF-SELECTION.
+      CREATE OBJECT o_emp.
+      CREATE OBJECT o_events.
+
+      SET HANDLER o_events->catch_double_click FOR o_emp.
+      o_emp->double_click( ).
+
+      WRITE 'END'.

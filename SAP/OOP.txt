@@ -1,0 +1,81 @@
+*&---------------------------------------------------------------------*
+*& Report ZCHARU_OOP
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZCHARU_OOP.
+
+CLASS lcl_counter DEFINITION.
+
+  PUBLIC SECTION.
+  DATA count TYPE i.
+  METHODS next_number EXPORTING number TYPE i.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+  ENDCLASS.
+
+  CLASS lcl_counter IMPLEMENTATION .
+    METHOD next_number.
+      number = count + 1.
+      count = number.
+    ENDMETHOD.
+    ENDCLASS.
+DATA : v_doc TYPE i,
+      v_tag TYPE i.
+DATA o_doc TYPE REF TO zcl_charu_counter.
+DATA o_tag TYPE REF TO lcl_counter.
+START-OF-SELECTION.
+CREATE OBJECT o_doc.
+CREATE OBJECT o_tag.
+o_doc->next_number(
+  IMPORTING
+    number = v_doc
+).
+
+o_tag->next_number(
+  IMPORTING
+    number = v_tag
+).
+o_doc->next_number(
+  IMPORTING
+    number = v_doc
+).
+
+
+o_doc->next_number(
+  IMPORTING
+    number = v_doc
+).
+
+
+o_tag->next_number(
+  IMPORTING
+    number = v_tag
+).
+CALL FUNCTION 'ZCHARU_FM_COUNTER'
+ IMPORTING
+   NEXT_NUMBER       = v_doc
+          .
+
+
+CALL FUNCTION 'ZCHARU_FM_COUNTER'
+ IMPORTING
+   NEXT_NUMBER       = v_doc
+          .
+
+
+CALL FUNCTION 'ZCHARU_FM_COUNTER'
+ IMPORTING
+   NEXT_NUMBER       = v_tag
+          .
+
+
+CALL FUNCTION 'ZCHARU_FM_COUNTER'
+ IMPORTING
+   NEXT_NUMBER       = v_tag
+          .
+
+CALL FUNCTION 'ZCHARU_FM_COUNTER'
+ IMPORTING
+   NEXT_NUMBER       = v_doc
+          .
